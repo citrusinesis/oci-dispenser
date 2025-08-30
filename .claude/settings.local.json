@@ -1,8 +1,9 @@
 {
   "permissions": {
     "allow": [
+      "WebSearch",
       "Bash(nix develop:*)",
-      "WebSearch"
+      "Bash(terraform:*)"
     ],
     "deny": [],
     "ask": []
