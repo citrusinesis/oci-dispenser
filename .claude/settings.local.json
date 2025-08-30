@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nix develop:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
