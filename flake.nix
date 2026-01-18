@@ -1,5 +1,5 @@
 {
-  description = "Terraform development environment";
+  description = "Pulumi OCI Infrastructure with TypeScript";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -23,48 +23,24 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            # Terraform and related tools
-            terraform
-            terraform-ls
-            terraform-docs
-            terragrunt
-            tflint
+            # Node.js and package managers
+            nodejs
+            yarn
 
-            # Cloud CLIs
-            awscli2
+            # Pulumi
+            pulumi-bin
+            pulumictl
+
+            # OCI CLI for verification
+            oci-cli
 
             # Utilities
             jq
-            yq
-            curl
-            gnumake
-
-            # Security and validation
-            tfsec
-
-            # JSON/YAML processing
-            jsonnet
-
-            # Shell utilities
-            shellcheck
+            yq-go
           ];
 
           shellHook = ''
-            echo "🚀 Terraform development environment loaded!"
-            echo ""
-            echo "Available tools:"
-            echo "  terraform      - Infrastructure as Code tool"
-            echo "  terraform-ls   - Language server for Terraform"
-            echo "  terraform-docs - Generate documentation from Terraform modules"
-            echo "  terragrunt     - Terraform wrapper for DRY configurations"
-            echo "  tflint         - Terraform linter"
-            echo "  tfsec          - Security scanner for Terraform"
-            echo ""
-            echo "Cloud CLIs: aws"
-            echo "Utilities: jq, yq, curl, make, jsonnet"
-            echo "Development: shellcheck"
-            echo ""
-            echo "Run 'terraform --help' to get started!"
+            echo "🚀 Pulumi TypeScript development environment loaded!"
           '';
         };
       }
