@@ -40,7 +40,7 @@ export const traefikTailscaleService = new k8s.core.v1.Service(
       ],
     },
   },
-  { provider, dependsOn: [operator] }
+  { provider, dependsOn: [operator] },
 );
 
 // Note: Cloudflared accesses Traefik via ClusterIP (default service)

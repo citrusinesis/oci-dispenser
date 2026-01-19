@@ -1,14 +1,14 @@
 import * as k8s from "@pulumi/kubernetes";
-import { provider } from "../system/k3s";
 import { domainName } from "../infrastructure/config";
 import { internalWildcardCert } from "../system/cert-manager";
+import { provider } from "../system/k3s";
 
 const ns = new k8s.core.v1.Namespace(
   "whoami-system",
   {
     metadata: { name: "whoami" },
   },
-  { provider }
+  { provider },
 );
 
 export const deployment = new k8s.apps.v1.Deployment(
@@ -50,7 +50,7 @@ export const deployment = new k8s.apps.v1.Deployment(
       },
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const service = new k8s.core.v1.Service(
@@ -66,7 +66,7 @@ export const service = new k8s.core.v1.Service(
       type: "ClusterIP",
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const privateIngress = new k8s.networking.v1.Ingress(
@@ -105,5 +105,5 @@ export const privateIngress = new k8s.networking.v1.Ingress(
       ],
     },
   },
-  { provider, dependsOn: [service, internalWildcardCert] }
+  { provider, dependsOn: [service, internalWildcardCert] },
 );

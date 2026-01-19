@@ -1,8 +1,8 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as oci from "@pulumi/oci";
 import * as pulumi from "@pulumi/pulumi";
 import { compartmentId, sshPublicKey, tailscaleAuthKey } from "./config";
-import * as fs from "fs";
-import * as path from "path";
 import { subnet } from "./vcn";
 
 const availabilityDomains = oci.identity.getAvailabilityDomainsOutput({
@@ -51,9 +51,7 @@ const instance = new oci.core.Instance("oci-dispenser-server", {
     user_data: pulumi.all([tailscaleAuthKey]).apply(([authKey]) => {
       const scriptPath = path.join(__dirname, "cloud-init.sh");
       const script = fs.readFileSync(scriptPath, "utf8");
-      return Buffer.from(
-        script.replace("${TAILSCALE_AUTH_KEY}", authKey || ""),
-      ).toString("base64");
+      return Buffer.from(script.replace("${TAILSCALE_AUTH_KEY}", authKey || "")).toString("base64");
     }),
   },
 });

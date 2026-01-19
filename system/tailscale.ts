@@ -12,7 +12,7 @@ const ns = new k8s.core.v1.Namespace(
   {
     metadata: { name: "tailscale" },
   },
-  { provider }
+  { provider },
 );
 
 // Create Secret for OAuth Client
@@ -28,7 +28,7 @@ new k8s.core.v1.Secret(
       "client-secret": oauthClientSecret,
     },
   },
-  { provider }
+  { provider },
 );
 
 // Install Tailscale Operator via Helm Chart
@@ -54,7 +54,7 @@ export const operator = new k8s.helm.v3.Chart(
       },
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 // Exit Node using Connector CRD - the correct way to advertise exit node
@@ -73,5 +73,5 @@ export const exitNodeConnector = new k8s.apiextensions.CustomResource(
       tags: ["tag:k8s"],
     },
   },
-  { provider, dependsOn: [operator] }
+  { provider, dependsOn: [operator] },
 );

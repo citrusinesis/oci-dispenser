@@ -1,14 +1,14 @@
 import * as k8s from "@pulumi/kubernetes";
-import { provider } from "../system/k3s";
 import { domainName } from "../infrastructure/config";
 import { internalWildcardCert } from "../system/cert-manager";
+import { provider } from "../system/k3s";
 
 const ns = new k8s.core.v1.Namespace(
   "n8n-system",
   {
     metadata: { name: "n8n" },
   },
-  { provider }
+  { provider },
 );
 
 const dataPvc = new k8s.core.v1.PersistentVolumeClaim(
@@ -21,7 +21,7 @@ const dataPvc = new k8s.core.v1.PersistentVolumeClaim(
       storageClassName: "local-path",
     },
   },
-  { provider }
+  { provider },
 );
 
 export const deployment = new k8s.apps.v1.Deployment(
@@ -49,9 +49,7 @@ export const deployment = new k8s.apps.v1.Deployment(
                 { name: "N8N_HOST", value: `n8n.${domainName}` },
                 { name: "WEBHOOK_URL", value: `https://n8n.${domainName}/` },
               ],
-              volumeMounts: [
-                { name: "data", mountPath: "/home/node/.n8n" },
-              ],
+              volumeMounts: [{ name: "data", mountPath: "/home/node/.n8n" }],
               resources: {
                 limits: { memory: "1Gi", cpu: "1000m" },
                 requests: { memory: "512Mi", cpu: "200m" },
@@ -78,7 +76,7 @@ export const deployment = new k8s.apps.v1.Deployment(
       },
     },
   },
-  { provider, dependsOn: [ns, dataPvc] }
+  { provider, dependsOn: [ns, dataPvc] },
 );
 
 export const service = new k8s.core.v1.Service(
@@ -93,7 +91,7 @@ export const service = new k8s.core.v1.Service(
       ports: [{ port: 80, targetPort: 5678 }],
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const ingress = new k8s.networking.v1.Ingress(
@@ -132,5 +130,5 @@ export const ingress = new k8s.networking.v1.Ingress(
       ],
     },
   },
-  { provider, dependsOn: [service, internalWildcardCert] }
+  { provider, dependsOn: [service, internalWildcardCert] },
 );

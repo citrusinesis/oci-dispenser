@@ -1,8 +1,8 @@
 import * as k8s from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
-import { provider } from "../system/k3s";
 import { domainName } from "../infrastructure/config";
 import { internalWildcardCert } from "../system/cert-manager";
+import { provider } from "../system/k3s";
 
 const config = new pulumi.Config("livesync");
 const couchdbUser = config.get("couchdbUser") || "obsidian";
@@ -13,7 +13,7 @@ const ns = new k8s.core.v1.Namespace(
   {
     metadata: { name: "obsidian-livesync" },
   },
-  { provider }
+  { provider },
 );
 
 const secret = new k8s.core.v1.Secret(
@@ -28,7 +28,7 @@ const secret = new k8s.core.v1.Secret(
       COUCHDB_PASSWORD: couchdbPassword,
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 const dataPvc = new k8s.core.v1.PersistentVolumeClaim(
@@ -44,7 +44,7 @@ const dataPvc = new k8s.core.v1.PersistentVolumeClaim(
       storageClassName: "local-path",
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 const headlessService = new k8s.core.v1.Service(
@@ -60,7 +60,7 @@ const headlessService = new k8s.core.v1.Service(
       ports: [{ port: 5984, targetPort: 5984, name: "http" }],
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const statefulSet = new k8s.apps.v1.StatefulSet(
@@ -155,7 +155,7 @@ export const statefulSet = new k8s.apps.v1.StatefulSet(
       },
     },
   },
-  { provider, dependsOn: [ns, dataPvc, headlessService, secret] }
+  { provider, dependsOn: [ns, dataPvc, headlessService, secret] },
 );
 
 export const service = new k8s.core.v1.Service(
@@ -170,7 +170,7 @@ export const service = new k8s.core.v1.Service(
       ports: [{ port: 5984, targetPort: 5984 }],
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const ingress = new k8s.networking.v1.Ingress(
@@ -209,7 +209,7 @@ export const ingress = new k8s.networking.v1.Ingress(
       ],
     },
   },
-  { provider, dependsOn: [service, internalWildcardCert] }
+  { provider, dependsOn: [service, internalWildcardCert] },
 );
 
 // CouchDB initialization job for LiveSync
@@ -263,5 +263,5 @@ hostname=http://couchdb-service:5984 username="$COUCHDB_USER" password="$COUCHDB
       },
     },
   },
-  { provider, dependsOn: [statefulSet, service] }
+  { provider, dependsOn: [statefulSet, service] },
 );

@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write ."
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,7 @@
     "@pulumi/tailscale": "^0.23.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
     "@types/node": "^22.9.0",
     "tslib": "^2.8.1",
     "tsx": "^4.19.2",

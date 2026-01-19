@@ -1,5 +1,5 @@
 import * as oci from "@pulumi/oci";
-import { compartmentId, allowPublicAccess } from "./config";
+import { allowPublicAccess, compartmentId } from "./config";
 
 export const vcn = new oci.core.Vcn("main-vcn", {
   compartmentId: compartmentId,

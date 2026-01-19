@@ -10,7 +10,7 @@ const ns = new k8s.core.v1.Namespace(
   {
     metadata: { name: "cloudflared" },
   },
-  { provider }
+  { provider },
 );
 
 const secret = new k8s.core.v1.Secret(
@@ -24,7 +24,7 @@ const secret = new k8s.core.v1.Secret(
       TUNNEL_TOKEN: tunnelToken,
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const deployment = new k8s.apps.v1.Deployment(
@@ -83,5 +83,5 @@ export const deployment = new k8s.apps.v1.Deployment(
       },
     },
   },
-  { provider, dependsOn: [ns, secret] }
+  { provider, dependsOn: [ns, secret] },
 );

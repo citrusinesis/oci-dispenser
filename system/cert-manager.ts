@@ -1,9 +1,9 @@
+import * as command from "@pulumi/command";
 import * as k8s from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
+import { domainName } from "../infrastructure/config";
 import { provider } from "./k3s";
 import { reflector } from "./reflector";
-import * as command from "@pulumi/command";
-import { domainName } from "../infrastructure/config";
 
 const config = new pulumi.Config("cloudflare");
 const cloudflareApiToken = config.requireSecret("apiToken");
@@ -15,7 +15,7 @@ const certManagerNs = new k8s.core.v1.Namespace(
   {
     metadata: { name: "cert-manager" },
   },
-  { provider }
+  { provider },
 );
 
 export const certManager = new k8s.helm.v3.Chart(
@@ -36,7 +36,7 @@ export const certManager = new k8s.helm.v3.Chart(
       },
     },
   },
-  { provider, dependsOn: [certManagerNs] }
+  { provider, dependsOn: [certManagerNs] },
 );
 
 // Cloudflare API Token Secret (for DNS-01 Challenge)
@@ -51,7 +51,7 @@ const cloudflareApiTokenSecret = new k8s.core.v1.Secret(
       "api-token": cloudflareApiToken,
     },
   },
-  { provider, dependsOn: [certManager] }
+  { provider, dependsOn: [certManager] },
 );
 
 // Wait for cert-manager webhook to be ready
@@ -61,7 +61,7 @@ const waitForWebhook = new command.local.Command(
   {
     create: "sleep 60",
   },
-  { dependsOn: [certManager] }
+  { dependsOn: [certManager] },
 );
 
 // ClusterIssuer for Let's Encrypt (Production)
@@ -95,7 +95,7 @@ export const letsencryptIssuer = new k8s.apiextensions.CustomResource(
       },
     },
   },
-  { provider, dependsOn: [certManager, cloudflareApiTokenSecret, waitForWebhook] }
+  { provider, dependsOn: [certManager, cloudflareApiTokenSecret, waitForWebhook] },
 );
 
 export const internalWildcardCert = new k8s.apiextensions.CustomResource(
@@ -124,5 +124,5 @@ export const internalWildcardCert = new k8s.apiextensions.CustomResource(
       },
     },
   },
-  { provider, dependsOn: [letsencryptIssuer, reflector] }
+  { provider, dependsOn: [letsencryptIssuer, reflector] },
 );

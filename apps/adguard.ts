@@ -7,7 +7,7 @@ const ns = new k8s.core.v1.Namespace(
   {
     metadata: { name: "adguard" },
   },
-  { provider }
+  { provider },
 );
 
 const configPvc = new k8s.core.v1.PersistentVolumeClaim(
@@ -20,7 +20,7 @@ const configPvc = new k8s.core.v1.PersistentVolumeClaim(
       storageClassName: "local-path",
     },
   },
-  { provider }
+  { provider },
 );
 
 const workPvc = new k8s.core.v1.PersistentVolumeClaim(
@@ -33,7 +33,7 @@ const workPvc = new k8s.core.v1.PersistentVolumeClaim(
       storageClassName: "local-path",
     },
   },
-  { provider }
+  { provider },
 );
 
 const headlessService = new k8s.core.v1.Service(
@@ -49,7 +49,7 @@ const headlessService = new k8s.core.v1.Service(
       ports: [{ port: 80, targetPort: 80, name: "http" }],
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 export const statefulSet = new k8s.apps.v1.StatefulSet(
@@ -112,7 +112,7 @@ export const statefulSet = new k8s.apps.v1.StatefulSet(
       },
     },
   },
-  { provider, dependsOn: [ns, configPvc, workPvc, headlessService] }
+  { provider, dependsOn: [ns, configPvc, workPvc, headlessService] },
 );
 
 export const service = new k8s.core.v1.Service(
@@ -138,5 +138,5 @@ export const service = new k8s.core.v1.Service(
       ],
     },
   },
-  { provider, dependsOn: [operator] }
+  { provider, dependsOn: [operator] },
 );

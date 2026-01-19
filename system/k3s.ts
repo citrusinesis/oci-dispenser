@@ -1,8 +1,9 @@
+import * as command from "@pulumi/command";
 import * as k8s from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
-import * as command from "@pulumi/command";
 import { publicIp } from "../infrastructure/compute";
 
+// biome-ignore lint/complexity/useLiteralKeys: TypeScript requires bracket notation for index signatures
 const sshPrivateKey = pulumi.secret(process.env["SSH_PRIVATE_KEY"] || "");
 
 const kubeconfig = new command.remote.Command(
@@ -26,15 +27,13 @@ const kubeconfig = new command.remote.Command(
       sudo cat /etc/rancher/k3s/k3s.yaml
     `,
   },
-  {}
+  {},
 ); // Implicit dependency on publicIp via connection
 
 export const k3sConfig = pulumi.secret(
-  pulumi
-    .all([kubeconfig.stdout, publicIp])
-    .apply(([config, ip]: [string, string]) => {
-      return config.replace("127.0.0.1", ip).replace("0.0.0.0", ip);
-    })
+  pulumi.all([kubeconfig.stdout, publicIp]).apply(([config, ip]: [string, string]) => {
+    return config.replace("127.0.0.1", ip).replace("0.0.0.0", ip);
+  }),
 );
 
 export const provider = new k8s.Provider("k3s-provider", {

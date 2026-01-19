@@ -1,14 +1,14 @@
 import * as k8s from "@pulumi/kubernetes";
-import { provider } from "./k3s";
 import { domainName } from "../infrastructure/config";
 import { internalWildcardCert } from "./cert-manager";
+import { provider } from "./k3s";
 
 const ns = new k8s.core.v1.Namespace(
   "kubernetes-dashboard",
   {
     metadata: { name: "kubernetes-dashboard" },
   },
-  { provider }
+  { provider },
 );
 
 // Install Kubernetes Dashboard via Helm
@@ -27,7 +27,7 @@ export const dashboard = new k8s.helm.v3.Chart(
       metricsScraper: { enabled: true },
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 // Create Admin ServiceAccount
@@ -39,7 +39,7 @@ const adminUser = new k8s.core.v1.ServiceAccount(
       namespace: ns.metadata.name,
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
 
 // WARNING: cluster-admin grants full cluster access. This is required for
@@ -62,7 +62,7 @@ new k8s.rbac.v1.ClusterRoleBinding(
       },
     ],
   },
-  { provider, dependsOn: [adminUser] }
+  { provider, dependsOn: [adminUser] },
 );
 
 // Expose via Traefik Internal Gateway
@@ -98,7 +98,7 @@ export const ingressRoute = new k8s.apiextensions.CustomResource(
       },
     },
   },
-  { provider, dependsOn: [dashboard, internalWildcardCert] }
+  { provider, dependsOn: [dashboard, internalWildcardCert] },
 );
 
 // Define ServersTransport to skip backend TLS verification
@@ -115,5 +115,5 @@ export const dashboardTransport = new k8s.apiextensions.CustomResource(
       insecureSkipVerify: true,
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );

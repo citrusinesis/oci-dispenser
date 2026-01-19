@@ -67,7 +67,14 @@
     // "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["index.ts", "infrastructure/**/*", "system/**/*", "apps/**/*", "lib/**/*", "tests/**/*"],
+  "include": [
+    "index.ts",
+    "infrastructure/**/*",
+    "system/**/*",
+    "apps/**/*",
+    "lib/**/*",
+    "tests/**/*"
+  ],
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"],
   "ts-node": {
     "esm": true,

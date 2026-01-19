@@ -10,7 +10,7 @@ const ns = new k8s.core.v1.Namespace(
   {
     metadata: { name: "reflector" },
   },
-  { provider }
+  { provider },
 );
 
 export const reflector = new k8s.helm.v3.Chart(
@@ -28,5 +28,5 @@ export const reflector = new k8s.helm.v3.Chart(
       fullnameOverride: "reflector",
     },
   },
-  { provider, dependsOn: [ns] }
+  { provider, dependsOn: [ns] },
 );
